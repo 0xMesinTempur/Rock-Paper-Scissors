@@ -867,28 +867,49 @@ class RockPaperScissorsGame {
 // Initialize game when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        // Create global game instance
-        window.rpsGame = new RockPaperScissorsGame();
+        // Show loading screen initially
+        const loadingScreen = document.getElementById('loading-screen');
         
-        // Add global debug functions in development
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            window.debugRPS = {
-                resetGame: () => window.rpsGame.resetGameData(),
-                getStats: () => window.rpsGame.getGameStats(),
-                exportData: () => window.rpsGame.exportGameData(),
-                importData: (data) => window.rpsGame.importGameData(data),
-                addCoins: (amount) => {
-                    window.rpsGame.balance += amount;
-                    window.rpsGame.saveBalance();
-                    window.rpsGame.updateBalanceDisplay();
-                }
-            };
-            console.log('Debug functions available: window.debugRPS');
-        }
+        // Simulate loading process
+        setTimeout(() => {
+            // Create global game instance
+            window.rpsGame = new RockPaperScissorsGame();
+            
+            // Add global debug functions in development
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                window.debugRPS = {
+                    resetGame: () => window.rpsGame.resetGameData(),
+                    getStats: () => window.rpsGame.getGameStats(),
+                    exportData: () => window.rpsGame.exportGameData(),
+                    importData: (data) => window.rpsGame.importGameData(data),
+                    addCoins: (amount) => {
+                        window.rpsGame.balance += amount;
+                        window.rpsGame.saveBalance();
+                        window.rpsGame.updateBalanceDisplay();
+                    }
+                };
+                console.log('Debug functions available: window.debugRPS');
+            }
+            
+            // Hide loading screen
+            if (loadingScreen) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }
+            
+            console.log('Rock Paper Scissors Game initialized successfully');
+        }, 1500); // 1.5 second loading delay for professional feel
         
-        console.log('Rock Paper Scissors Game initialized successfully');
     } catch (error) {
         console.error('Failed to initialize game:', error);
+        
+        // Hide loading screen and show error
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+            loadingScreen.style.display = 'none';
+        }
         
         // Show user-friendly error message
         document.body.innerHTML = `

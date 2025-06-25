@@ -1,0 +1,22 @@
+{
+  "name": "Rock Paper Scissors - Gaming Edition",
+  "short_name": "RPS Game",
+  "description": "Play the classic Rock Paper Scissors game with coins, daily rewards, and leaderboards!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#171616",
+  "theme_color": "#4299e1",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "image/rps-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "lang": "en",
+  "scope": "/",
+  "id": "rps-gaming-app"
+}

@@ -85,7 +85,33 @@ This is a gamified Rock Paper Scissors web application that transforms the class
 
 Preferred communication style: Simple, everyday language.
 
-## Changelog
+## Recent Changes
 
-Changelog:
-- June 25, 2025. Initial setup
+- June 25, 2025: Initial setup with basic Rock Paper Scissors functionality
+- June 25, 2025: Enhanced UI with header withdraw button and connect wallet in main menu 
+- June 25, 2025: Added interactive game animations (bounce, pulse, shake, glow effects)
+- June 25, 2025: Implemented modal system for withdraw and wallet connect
+- June 25, 2025: Added professional logo (rps-logo.svg) with floating animation
+- June 25, 2025: Added Farcaster mini app support with meta tags and manifest.json
+- June 25, 2025: Implemented loading screen with animated logo for professional feel
+
+## Professional Features Added
+
+### Farcaster Mini App Compatibility
+- Meta tags for Farcaster Frame support
+- Open Graph and Twitter Card meta tags for social sharing
+- PWA manifest.json for app-like experience
+- Professional loading screen with branding
+
+### Enhanced User Experience
+- Custom SVG logo with VS battle theme
+- Floating logo animation on home screen
+- Modal-based withdraw and wallet connect interfaces
+- Sequential game animations for better engagement
+- Improved button sizing and precision
+
+### Technical Improvements
+- Comprehensive error handling with user-friendly messages
+- Loading state management
+- Enhanced accessibility with proper meta tags
+- Optimized for mobile and web deployment
