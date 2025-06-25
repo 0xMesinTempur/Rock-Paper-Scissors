@@ -242,12 +242,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="wallet-info">
-                        <p>Connect your wallet to enable secure transactions and social features</p>
+                        <p>Connect your MetaMask wallet to earn RPS tokens on Base Network and withdraw your coins as real tokens!</p>
+                        <div class="network-info" style="margin-top: 15px; padding: 10px; background: rgba(66, 153, 225, 0.1); border-radius: 8px; border-left: 4px solid #4299e1;">
+                            <strong>Base Network Benefits:</strong>
+                            <ul style="margin: 8px 0 0 20px; text-align: left;">
+                                <li>Earn real RPS tokens for every game win</li>
+                                <li>Withdraw local coins as Base Network tokens</li>
+                                <li>Claim daily rewards as blockchain tokens</li>
+                                <li>Low transaction fees on Base</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="wallet-buttons">
                         <button id="connect-farcaster" class="wallet-connect-btn">
-                            <i class="fas fa-user-plus"></i>
-                            Connect Farcaster
+                            <i class="fas fa-wallet"></i>
+                            Connect Wallet
                         </button>
                         <button id="frame-version" class="wallet-connect-btn secondary">
                             <i class="fas fa-external-link-alt"></i>
@@ -278,6 +287,8 @@
         </div>
     </div>
 
+    <script src="public/js/web3-helpers.js"></script>
+    <script src="public/js/wallet-connection.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -95,6 +95,7 @@ Preferred communication style: Simple, everyday language.
 - June 25, 2025: Added Farcaster mini app support with meta tags and manifest.json
 - June 25, 2025: Implemented loading screen with animated logo for professional feel
 - June 25, 2025: Built complete Farcaster Frame server with dynamic image generation, POST endpoints, and state management
+- June 25, 2025: Integrated Base Network support with Web3 wallet connection, token rewards, and withdrawal functionality
 
 ## Professional Features Added
 
@@ -143,3 +144,30 @@ Preferred communication style: Simple, everyday language.
 - User-friendly error messages in Frame format
 - Fallback states for corrupted or missing sessions
 - Development vs production error detail levels
+
+## Base Network Integration
+
+### Web3 Wallet Connection
+- MetaMask wallet integration with automatic Base network detection
+- Automatic network switching to Base Sepolia for development
+- Real-time wallet status and balance monitoring
+- Secure transaction signing and confirmation
+
+### Token Reward System
+- RPS tokens minted on Base network for game wins (10 tokens)
+- Smaller rewards for ties (5 tokens) and losses (2 tokens)
+- Daily reward claiming system (50 tokens per day)
+- Persistent token balance tracking alongside local coins
+
+### Withdrawal Functionality
+- Convert local game coins to Base network RPS tokens
+- Automatic network switching before withdrawal
+- Transaction confirmation and status tracking
+- Fallback to local functionality if Web3 unavailable
+
+### Smart Contract Features
+- ERC-20 compliant RPS token contract
+- Game reward tracking and statistics
+- Daily reward claiming with cooldown protection
+- Owner-controlled minting and batch operations
+- Emergency withdrawal and admin functions

@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 const fs = require('fs');
+const Web3Integration = require('./blockchain/web3-integration');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +19,16 @@ app.use(express.static('.'));
 
 // Frame state storage
 const frameStates = new Map();
+
+// Initialize Web3 integration
+const web3 = new Web3Integration();
+web3.initialize().then(success => {
+    if (success) {
+        console.log('✅ Web3 integration ready');
+    } else {
+        console.log('⚠️  Web3 integration disabled');
+    }
+});
 
 // Game choices
 const CHOICES = {
@@ -398,6 +409,121 @@ app.post('/api/frame/stats', (req, res) => {
     } catch (error) {
         console.error('Error in stats endpoint:', error);
         res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Web3 API endpoints
+app.post('/api/web3/reward', async (req, res) => {
+    try {
+        const { playerAddress, gameResult } = req.body;
+        
+        if (!web3.isValidAddress(playerAddress)) {
+            return res.status(400).json({ error: 'Invalid player address' });
+        }
+        
+        if (!['win', 'lose', 'tie'].includes(gameResult)) {
+            return res.status(400).json({ error: 'Invalid game result' });
+        }
+        
+        // Simulate token reward (in production, this would mint actual tokens)
+        const tokenReward = gameResult === 'win' ? 10 : gameResult === 'tie' ? 5 : 2;
+        const mockTxHash = '0x' + Math.random().toString(16).substr(2, 64);
+        
+        res.json({
+            success: true,
+            txHash: mockTxHash,
+            reward: tokenReward,
+            message: `Player rewarded ${tokenReward} RPS tokens for ${gameResult}`
+        });
+    } catch (error) {
+        console.error('Reward API error:', error);
+        res.status(500).json({ 
+            error: 'Failed to process reward',
+            message: error.message 
+        });
+    }
+});
+
+app.post('/api/web3/withdraw', async (req, res) => {
+    try {
+        const { playerAddress, amount } = req.body;
+        
+        if (!web3.isValidAddress(playerAddress)) {
+            return res.status(400).json({ error: 'Invalid player address' });
+        }
+        
+        if (!amount || amount <= 0) {
+            return res.status(400).json({ error: 'Invalid withdrawal amount' });
+        }
+        
+        // Simulate token withdrawal (in production, this would mint actual tokens)
+        const mockTxHash = '0x' + Math.random().toString(16).substr(2, 64);
+        
+        res.json({
+            success: true,
+            txHash: mockTxHash,
+            amount: amount,
+            message: `Successfully withdrew ${amount} RPS tokens to Base network`
+        });
+    } catch (error) {
+        console.error('Withdrawal API error:', error);
+        res.status(500).json({ 
+            error: 'Failed to process withdrawal',
+            message: error.message 
+        });
+    }
+});
+
+app.get('/api/web3/balance/:address', async (req, res) => {
+    try {
+        const { address } = req.params;
+        
+        if (!web3.isValidAddress(address)) {
+            return res.status(400).json({ error: 'Invalid address' });
+        }
+        
+        // Simulate token balance
+        const mockBalance = (Math.random() * 1000).toFixed(2);
+        
+        res.json({
+            address: address,
+            balance: mockBalance,
+            stats: {
+                wins: 0,
+                totalRewards: mockBalance,
+                lastRewardTime: Date.now()
+            }
+        });
+    } catch (error) {
+        console.error('Balance API error:', error);
+        res.status(500).json({ 
+            error: 'Failed to get balance',
+            message: error.message 
+        });
+    }
+});
+
+app.get('/api/web3/network-config', (req, res) => {
+    try {
+        const baseConfig = {
+            chainId: '0x14A34', // Base Sepolia for testing
+            chainName: 'Base Sepolia',
+            nativeCurrency: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                decimals: 18
+            },
+            rpcUrls: ['https://sepolia.base.org'],
+            blockExplorerUrls: ['https://sepolia.basescan.org']
+        };
+        
+        res.json({
+            network: baseConfig,
+            contractAddress: '0x1234567890123456789012345678901234567890'
+        });
+    } catch (error) {
+        console.error('Network config error:', error);
+        res.status(500).json({ error: 'Failed to get network config' });
     }
 });
 

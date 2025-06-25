@@ -18,11 +18,23 @@ class RockPaperScissorsGame {
      * Initialize game components and event listeners
      */
     init() {
+        // Initialize balance and game state
+        this.balance = parseInt(localStorage.getItem('rps-balance')) || 100;
+        this.currentScreen = 'home';
+        this.lastRewardDate = localStorage.getItem('rps-last-reward');
+        
+        // Web3 integration
+        this.walletConnection = null;
+        this.isWeb3Enabled = false;
+        this.tokenBalance = 0;
+        
         this.updateBalanceDisplay();
         this.setupEventListeners();
         this.updateCheckinStatus();
         this.updateLeaderboardUserScore();
         this.validateGameState();
+        this.initWeb3();
+        this.initWeb3();
     }
 
     /**
@@ -110,7 +122,13 @@ class RockPaperScissorsGame {
 
             // Game controls
             this.addEventListenerSafe('play-again', 'click', () => this.resetGame());
-            this.addEventListenerSafe('claim-reward-btn', 'click', () => this.claimDailyReward());
+            this.addEventListenerSafe('claim-reward-btn', 'click', () => {
+                if (this.isWeb3Enabled && this.walletConnection && this.walletConnection.isConnected) {
+                    this.claimDailyRewardTokens();
+                } else {
+                    this.claimDailyReward();
+                }
+            });
 
             // Header withdraw button
             this.addEventListenerSafe('header-withdraw-btn', 'click', () => this.showWithdrawModal());
@@ -121,7 +139,13 @@ class RockPaperScissorsGame {
             // Modal functionality
             this.addEventListenerSafe('close-withdraw-modal', 'click', () => this.hideWithdrawModal());
             this.addEventListenerSafe('close-wallet-modal', 'click', () => this.hideWalletModal());
-            this.addEventListenerSafe('withdraw-btn', 'click', () => this.withdrawBalance());
+            this.addEventListenerSafe('withdraw-btn', 'click', () => {
+                if (this.isWeb3Enabled && this.walletConnection && this.walletConnection.isConnected) {
+                    this.withdrawToBase();
+                } else {
+                    this.withdrawBalance();
+                }
+            });
             
             // Withdraw input validation
             const withdrawInput = document.getElementById('withdraw-amount');
@@ -135,7 +159,7 @@ class RockPaperScissorsGame {
             }
 
             // Wallet functionality
-            this.addEventListenerSafe('connect-farcaster', 'click', () => this.connectFarcaster());
+            this.addEventListenerSafe('connect-farcaster', 'click', () => this.connectWallet());
             this.addEventListenerSafe('frame-version', 'click', () => this.openFrameVersion());
             this.addEventListenerSafe('share-score', 'click', () => this.shareScore());
 
@@ -222,7 +246,11 @@ class RockPaperScissorsGame {
             balanceElements.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
-                    element.textContent = this.balance;
+                    if (this.isWeb3Enabled && this.tokenBalance > 0) {
+                        element.innerHTML = `${this.balance} <small style="color: #4299e1;">(+${this.tokenBalance} RPS)</small>`;
+                    } else {
+                        element.textContent = this.balance;
+                    }
                 }
             });
 
@@ -291,12 +319,26 @@ class RockPaperScissorsGame {
                     this.addAnimation('result-text', result === 'win' ? 'pulse' : result === 'lose' ? 'shake' : 'glow');
                     this.addAnimation('vs', 'pulse');
 
-                    // Update balance for wins
-                    if (result === 'win') {
-                        this.balance++;
-                        this.saveBalance();
-                        this.updateBalanceDisplay();
+                    // Update balance and reward system
+                    let coinReward = 0;
+                    switch (result) {
+                        case 'win':
+                            coinReward = 10;
+                            break;
+                        case 'lose':
+                            coinReward = 2;
+                            break;
+                        case 'tie':
+                            coinReward = 5;
+                            break;
                     }
+                    
+                    this.balance += coinReward;
+                    this.saveBalance();
+                    this.updateBalanceDisplay();
+                    
+                    // Reward with tokens if wallet connected
+                    this.rewardWithTokens(result);
                 }, 1200);
             }
         } catch (error) {
@@ -700,6 +742,236 @@ class RockPaperScissorsGame {
         } catch (error) {
             console.error('Error connecting to Farcaster:', error);
             this.showWithdrawStatus('Failed to connect to Farcaster. Please try again.', 'error');
+        }
+    }
+
+    /**
+     * Initialize Web3 wallet connection
+     */
+    async initWeb3() {
+        try {
+            if (typeof window.WalletConnection !== 'undefined') {
+                this.walletConnection = new window.WalletConnection();
+                this.walletConnection.setupEventListeners();
+                this.isWeb3Enabled = true;
+                console.log('Web3 wallet connection initialized');
+            }
+        } catch (error) {
+            console.error('Web3 initialization failed:', error);
+            this.isWeb3Enabled = false;
+        }
+    }
+
+    /**
+     * Connect wallet and switch to Base network
+     */
+    async connectWallet() {
+        try {
+            if (!this.isWeb3Enabled) {
+                this.showError('Web3 wallet not available. Please install MetaMask.');
+                return;
+            }
+
+            const connectBtn = document.getElementById('connect-farcaster');
+            if (connectBtn) {
+                connectBtn.disabled = true;
+                connectBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+            }
+
+            const result = await this.walletConnection.connectWallet();
+            
+            if (result.success) {
+                this.updateWalletUI(result.account, result.shortAccount);
+                await this.updateTokenBalance();
+                this.showWithdrawStatus(`Wallet connected: ${result.shortAccount}`, 'success');
+            } else {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            console.error('Wallet connection failed:', error);
+            this.showWithdrawStatus('Failed to connect wallet. Please try again.', 'error');
+            
+            const connectBtn = document.getElementById('connect-farcaster');
+            if (connectBtn) {
+                connectBtn.disabled = false;
+                connectBtn.innerHTML = '<i class="fas fa-user-plus"></i> Connect Wallet';
+            }
+        }
+    }
+
+    /**
+     * Update wallet UI after connection
+     */
+    updateWalletUI(account, shortAccount) {
+        const connectBtn = document.getElementById('connect-farcaster');
+        const shareBtn = document.getElementById('share-score');
+        const statusIndicator = document.querySelector('.status-indicator');
+        const statusText = document.querySelector('.status-text');
+
+        if (connectBtn) {
+            connectBtn.innerHTML = `<i class="fas fa-check"></i> ${shortAccount}`;
+            connectBtn.disabled = false;
+        }
+
+        if (shareBtn) {
+            shareBtn.disabled = false;
+        }
+
+        if (statusIndicator) {
+            statusIndicator.className = 'status-indicator online';
+        }
+
+        if (statusText) {
+            statusText.textContent = `Connected: ${shortAccount}`;
+        }
+    }
+
+    /**
+     * Update token balance display
+     */
+    async updateTokenBalance() {
+        try {
+            if (!this.walletConnection || !this.walletConnection.isConnected) return;
+
+            const balance = await this.walletConnection.getTokenBalance();
+            this.tokenBalance = parseFloat(balance);
+            
+            // Update UI to show both local coins and RPS tokens
+            this.updateBalanceDisplay();
+        } catch (error) {
+            console.error('Failed to update token balance:', error);
+        }
+    }
+
+    /**
+     * Reward player with tokens on Base network
+     */
+    async rewardWithTokens(gameResult) {
+        try {
+            if (!this.walletConnection || !this.walletConnection.isConnected) {
+                console.log('Wallet not connected, skipping token reward');
+                return;
+            }
+
+            // Call backend to mint tokens
+            const response = await fetch('/api/web3/reward', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    playerAddress: this.walletConnection.account,
+                    gameResult: gameResult
+                })
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Token reward successful:', result.txHash);
+                await this.updateTokenBalance();
+                
+                // Show token reward notification
+                this.showWithdrawStatus(`+${this.getTokenReward(gameResult)} RPS tokens earned!`, 'success');
+            }
+        } catch (error) {
+            console.error('Token reward failed:', error);
+        }
+    }
+
+    /**
+     * Get token reward amount based on game result
+     */
+    getTokenReward(result) {
+        switch (result) {
+            case 'win': return 10;
+            case 'tie': return 5;
+            case 'lose': return 2;
+            default: return 0;
+        }
+    }
+
+    /**
+     * Withdraw local coins as Base tokens
+     */
+    async withdrawToBase() {
+        try {
+            const withdrawInput = document.getElementById('withdraw-amount');
+            const amount = parseInt(withdrawInput.value);
+
+            if (!this.validateWithdrawal(amount)) return;
+
+            if (!this.walletConnection || !this.walletConnection.isConnected) {
+                this.showWithdrawStatus('Please connect your wallet first', 'error');
+                return;
+            }
+
+            // Check network
+            const network = await this.walletConnection.getCurrentNetwork();
+            if (!network.isBase) {
+                this.showWithdrawStatus('Switching to Base network...', 'info');
+                await this.walletConnection.switchToBase();
+            }
+
+            // Call backend to mint tokens equivalent to local coins
+            const response = await fetch('/api/web3/withdraw', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    playerAddress: this.walletConnection.account,
+                    amount: amount
+                })
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                
+                // Deduct from local balance
+                this.balance -= amount;
+                this.saveBalance();
+                this.updateBalanceDisplay();
+                await this.updateTokenBalance();
+
+                this.showWithdrawStatus(`Successfully withdrew ${amount} RPS tokens to Base network!`, 'success');
+                this.hideWithdrawModal();
+            } else {
+                const error = await response.json();
+                throw new Error(error.message);
+            }
+        } catch (error) {
+            console.error('Withdrawal failed:', error);
+            this.showWithdrawStatus(`Withdrawal failed: ${error.message}`, 'error');
+        }
+    }
+
+    /**
+     * Claim daily reward as tokens
+     */
+    async claimDailyRewardTokens() {
+        try {
+            if (!this.walletConnection || !this.walletConnection.isConnected) {
+                // Fall back to local reward
+                this.claimDailyReward();
+                return;
+            }
+
+            const result = await this.walletConnection.claimDailyReward();
+            
+            if (result.success) {
+                this.lastRewardDate = this.getCurrentDate();
+                localStorage.setItem('rps-last-reward', this.lastRewardDate);
+                this.updateCheckinStatus();
+                await this.updateTokenBalance();
+                
+                this.showCheckinStatus('Daily reward of 50 RPS tokens claimed!', 'success');
+            } else {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            console.error('Daily token reward failed:', error);
+            this.showCheckinStatus('Daily token reward failed. Claiming local reward instead.', 'error');
+            this.claimDailyReward(); // Fallback to local reward
         }
     }
 
