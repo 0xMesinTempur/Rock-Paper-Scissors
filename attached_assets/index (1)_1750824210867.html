@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Balance -->
+        <header class="header">
+            <div class="balance-container">
+                <i class="fas fa-coins"></i>
+                <span class="balance-label">Balance:</span>
+                <span id="balance" class="balance-amount">0</span>
+            </div>
+        </header>
+
+        <!-- Home Screen -->
+        <div id="home-screen" class="screen active">
+            <h1 class="app-title">Rock Paper Scissors</h1>
+            <div class="menu-buttons">
+                <button id="play-btn" class="menu-button">
+                    <i class="fas fa-play"></i>
+                    Play Game
+                </button>
+                <button id="leaderboard-btn" class="menu-button">
+                    <i class="fas fa-trophy"></i>
+                    Leaderboard
+                </button>
+                <button id="daily-checkin-btn" class="menu-button">
+                    <i class="fas fa-calendar-check"></i>
+                    Daily Check-In
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <button id="back-to-home" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>Choose Your Move</h2>
+            </div>
+            
+            <div class="game-area">
+                <div class="choices">
+                    <button class="choice-btn" data-choice="rock">
+                        <i class="fas fa-hand-rock"></i>
+                        <span>Rock</span>
+                    </button>
+                    <button class="choice-btn" data-choice="paper">
+                        <i class="fas fa-hand-paper"></i>
+                        <span>Paper</span>
+                    </button>
+                    <button class="choice-btn" data-choice="scissors">
+                        <i class="fas fa-hand-scissors"></i>
+                        <span>Scissors</span>
+                    </button>
+                </div>
+
+                <div id="game-result" class="game-result hidden">
+                    <div class="battle-display">
+                        <div class="player-choice">
+                            <h3>You</h3>
+                            <div id="player-choice-icon" class="choice-icon"></div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="computer-choice">
+                            <h3>Computer</h3>
+                            <div id="computer-choice-icon" class="choice-icon"></div>
+                        </div>
+                    </div>
+                    <div id="result-text" class="result-text"></div>
+                    <button id="play-again" class="play-again-btn">Play Again</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Screen -->
+        <div id="leaderboard-screen" class="screen">
+            <div class="screen-header">
+                <button id="back-to-home-leaderboard" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>Leaderboard</h2>
+            </div>
+            
+            <div class="leaderboard-container">
+                <div class="leaderboard-list">
+                    <div class="leaderboard-item current-user">
+                        <div class="rank">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="username">You</div>
+                        <div class="score" id="user-leaderboard-score">0</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="rank gold">1</div>
+                        <div class="username">RockMaster</div>
+                        <div class="score">147</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="rank silver">2</div>
+                        <div class="username">PaperQueen</div>
+                        <div class="score">132</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="rank bronze">3</div>
+                        <div class="username">ScissorNinja</div>
+                        <div class="score">98</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="rank">4</div>
+                        <div class="username">GamePro</div>
+                        <div class="score">87</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="rank">5</div>
+                        <div class="username">WinnerX</div>
+                        <div class="score">76</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Check-in Screen -->
+        <div id="checkin-screen" class="screen">
+            <div class="screen-header">
+                <button id="back-to-home-checkin" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>Daily Check-In</h2>
+            </div>
+            
+            <div class="checkin-container">
+                <div class="checkin-content">
+                    <div class="checkin-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3>Daily Reward</h3>
+                    <p>Get 1 coin every day!</p>
+                    <button id="claim-reward-btn" class="claim-button">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        Claim Reward
+                    </button>
+                    <div id="checkin-status" class="checkin-status"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <!-- Wallet Section -->
+                <div class="wallet-section">
+                    <div class="wallet-header">
+                        <i class="fas fa-wallet"></i>
+                        <h3>Your Wallet</h3>
+                    </div>
+                    
+                    <!-- Balance Display -->
+                    <div class="wallet-balance">
+                        <div class="balance-info">
+                            <span class="balance-label">Available:</span>
+                            <span id="footer-balance" class="footer-balance-amount">0</span>
+                            <span class="currency">coins</span>
+                        </div>
+                    </div>
+
+                    <!-- Withdraw Section -->
+                    <div class="withdraw-container">
+                        <div class="withdraw-controls">
+                            <input type="number" id="withdraw-amount" placeholder="Enter amount" min="1" max="1000">
+                            <button id="withdraw-btn" class="withdraw-button">
+                                <i class="fas fa-arrow-up"></i>
+                                Withdraw
+                            </button>
+                        </div>
+                        <div id="withdraw-status" class="withdraw-status"></div>
+                    </div>
+                </div>
+
+                <!-- Farcaster Integration Section -->
+                <div class="farcaster-section">
+                    <div class="farcaster-header">
+                        <i class="fas fa-link"></i>
+                        <h3>Connect to Farcaster</h3>
+                    </div>
+                    <div class="farcaster-content">
+                        <p>Link your Farcaster account to share achievements and earn rewards</p>
+                        <div class="farcaster-buttons">
+                            <button id="connect-farcaster" class="farcaster-btn primary">
+                                <i class="fas fa-user-plus"></i>
+                                Connect Account
+                            </button>
+                            <button id="share-score" class="farcaster-btn secondary" disabled>
+                                <i class="fas fa-share"></i>
+                                Share Score
+                            </button>
+                        </div>
+                        <div class="farcaster-status">
+                            <span class="status-indicator offline"></span>
+                            <span class="status-text">Not connected</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
