@@ -13,15 +13,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Rock Paper Scissors Server"
+args = "Frame Server"
 
 [[workflows.workflow]]
-name = "Rock Paper Scissors Server"
+name = "Frame Server"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m http.server 5000"
+args = "node frame-server.js"
 waitForPort = 5000
 
 [[ports]]

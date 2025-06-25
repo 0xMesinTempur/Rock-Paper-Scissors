@@ -94,6 +94,7 @@ Preferred communication style: Simple, everyday language.
 - June 25, 2025: Added professional logo (rps-logo.svg) with floating animation
 - June 25, 2025: Added Farcaster mini app support with meta tags and manifest.json
 - June 25, 2025: Implemented loading screen with animated logo for professional feel
+- June 25, 2025: Built complete Farcaster Frame server with dynamic image generation, POST endpoints, and state management
 
 ## Professional Features Added
 
@@ -115,3 +116,30 @@ Preferred communication style: Simple, everyday language.
 - Loading state management
 - Enhanced accessibility with proper meta tags
 - Optimized for mobile and web deployment
+
+## Advanced Frame Features
+
+### Dynamic Image Generation
+- SVG-based frame images for lightweight, scalable graphics
+- Real-time game state visualization
+- Custom graphics for different game phases (start, result, balance, stats)
+- Proper aspect ratio (1.91:1) for Frame compatibility
+
+### POST Endpoint Handling
+- `/api/frame/play` - Handle game moves with proper state updates
+- `/api/frame/balance` - Display user balance and statistics
+- `/api/frame/reward` - Daily reward claiming system
+- `/api/frame/restart` - Reset game state for new rounds
+- `/api/frame/stats` - Comprehensive game statistics display
+
+### Frame State Management
+- Session-based state storage using Map structure
+- Persistent game statistics across frame interactions
+- Balance tracking and reward system integration
+- Error handling for invalid states or corrupted sessions
+
+### Error Handling
+- Comprehensive error catching for all endpoints
+- User-friendly error messages in Frame format
+- Fallback states for corrupted or missing sessions
+- Development vs production error detail levels

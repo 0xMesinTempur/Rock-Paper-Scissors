@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Frame Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .frame-container { border: 1px solid #ccc; padding: 20px; margin: 20px 0; }
+        .frame-image { max-width: 100%; height: auto; }
+        .frame-buttons { margin: 10px 0; }
+        .frame-button { margin: 5px; padding: 10px 15px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .frame-button:hover { background: #0056b3; }
+        .test-results { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Farcaster Frame Test Tool</h1>
+    
+    <div class="frame-container">
+        <h2>Frame Endpoint Test</h2>
+        <div id="frame-content">Loading...</div>
+        <div class="frame-buttons">
+            <button class="frame-button" onclick="testFrame()">Test Frame Generation</button>
+            <button class="frame-button" onclick="testImage()">Test Image Generation</button>
+            <button class="frame-button" onclick="testGameplay()">Test Game Play</button>
+        </div>
+    </div>
+
+    <div class="test-results" id="results"></div>
+
+    <script>
+        const baseUrl = window.location.origin;
+        
+        async function testFrame() {
+            try {
+                const response = await fetch(`${baseUrl}/frame`);
+                const html = await response.text();
+                
+                document.getElementById('frame-content').innerHTML = 
+                    `<textarea rows="10" cols="80" readonly>${html}</textarea>`;
+                
+                // Extract frame meta tags
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const frameMetas = doc.querySelectorAll('meta[name^="fc:frame"]');
+                
+                let results = '<h3>Frame Meta Tags Found:</h3><ul>';
+                frameMetas.forEach(meta => {
+                    results += `<li><strong>${meta.name}:</strong> ${meta.content}</li>`;
+                });
+                results += '</ul>';
+                
+                document.getElementById('results').innerHTML = results;
+                log('Frame generation test passed', 'success');
+            } catch (error) {
+                log(`Frame test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testImage() {
+            try {
+                const sessionId = 'test-' + Date.now();
+                const imageUrl = `${baseUrl}/api/frame/image?session=${sessionId}`;
+                
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.className = 'frame-image';
+                img.onload = () => log('Image generation test passed', 'success');
+                img.onerror = () => log('Image generation test failed', 'error');
+                
+                document.getElementById('frame-content').innerHTML = '';
+                document.getElementById('frame-content').appendChild(img);
+                
+            } catch (error) {
+                log(`Image test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testGameplay() {
+            try {
+                const sessionId = 'test-' + Date.now();
+                
+                // Test game play endpoint
+                const response = await fetch(`${baseUrl}/api/frame/play?choice=rock&session=${sessionId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    
+                    // Check for result frame
+                    if (html.includes('fc:frame') && html.includes('Play Again')) {
+                        log('Gameplay test passed - game result generated', 'success');
+                    } else {
+                        log('Gameplay test failed - invalid response format', 'error');
+                    }
+                } else {
+                    log(`Gameplay test failed - HTTP ${response.status}`, 'error');
+                }
+                
+            } catch (error) {
+                log(`Gameplay test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function log(message, type) {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            results.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+        }
+        
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            setTimeout(testFrame, 500);
+        });
+    </script>
+</body>
+</html>

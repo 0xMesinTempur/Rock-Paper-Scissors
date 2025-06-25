@@ -136,6 +136,7 @@ class RockPaperScissorsGame {
 
             // Wallet functionality
             this.addEventListenerSafe('connect-farcaster', 'click', () => this.connectFarcaster());
+            this.addEventListenerSafe('frame-version', 'click', () => this.openFrameVersion());
             this.addEventListenerSafe('share-score', 'click', () => this.shareScore());
 
             // Modal close on backdrop click
@@ -699,6 +700,20 @@ class RockPaperScissorsGame {
         } catch (error) {
             console.error('Error connecting to Farcaster:', error);
             this.showWithdrawStatus('Failed to connect to Farcaster. Please try again.', 'error');
+        }
+    }
+
+    /**
+     * Open Frame version of the game
+     */
+    openFrameVersion() {
+        try {
+            const frameUrl = `${window.location.origin}/frame`;
+            window.open(frameUrl, '_blank');
+            console.log('Opened Frame version:', frameUrl);
+        } catch (error) {
+            console.error('Error opening Frame version:', error);
+            this.showError('Failed to open Frame version');
         }
     }
 
