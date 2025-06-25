@@ -112,7 +112,15 @@ class RockPaperScissorsGame {
             this.addEventListenerSafe('play-again', 'click', () => this.resetGame());
             this.addEventListenerSafe('claim-reward-btn', 'click', () => this.claimDailyReward());
 
-            // Wallet functionality
+            // Header withdraw button
+            this.addEventListenerSafe('header-withdraw-btn', 'click', () => this.showWithdrawModal());
+            
+            // Connect wallet button  
+            this.addEventListenerSafe('connect-wallet-btn', 'click', () => this.showWalletModal());
+
+            // Modal functionality
+            this.addEventListenerSafe('close-withdraw-modal', 'click', () => this.hideWithdrawModal());
+            this.addEventListenerSafe('close-wallet-modal', 'click', () => this.hideWalletModal());
             this.addEventListenerSafe('withdraw-btn', 'click', () => this.withdrawBalance());
             
             // Withdraw input validation
@@ -126,9 +134,17 @@ class RockPaperScissorsGame {
                 });
             }
 
-            // Farcaster functionality
+            // Wallet functionality
             this.addEventListenerSafe('connect-farcaster', 'click', () => this.connectFarcaster());
             this.addEventListenerSafe('share-score', 'click', () => this.shareScore());
+
+            // Modal close on backdrop click
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    this.hideWithdrawModal();
+                    this.hideWalletModal();
+                }
+            });
 
         } catch (error) {
             console.error('Error setting up event listeners:', error);
@@ -199,7 +215,7 @@ class RockPaperScissorsGame {
             const balanceElements = [
                 'balance',
                 'user-leaderboard-score',
-                'footer-balance'
+                'modal-balance'
             ];
 
             balanceElements.forEach(id => {
@@ -253,26 +269,58 @@ class RockPaperScissorsGame {
                 choicesElement.style.display = 'none';
                 resultElement.classList.remove('hidden');
 
-                // Display choices with icons
-                this.displayChoice('player-choice-icon', playerChoice);
-                this.displayChoice('computer-choice-icon', computerChoice);
+                // Add animation sequence
+                setTimeout(() => {
+                    this.displayChoice('player-choice-icon', playerChoice);
+                    this.addAnimation('player-choice-icon', 'bounce');
+                }, 200);
 
-                // Determine winner and update game state
-                const result = this.determineWinner(playerChoice, computerChoice);
-                this.displayResult(result, playerChoice, computerChoice);
-                this.updateGameStats(result);
+                setTimeout(() => {
+                    this.displayChoice('computer-choice-icon', computerChoice);
+                    this.addAnimation('computer-choice-icon', 'bounce');
+                }, 600);
 
-                // Update balance for wins
-                if (result === 'win') {
-                    this.balance++;
-                    this.saveBalance();
-                    this.updateBalanceDisplay();
-                }
+                setTimeout(() => {
+                    // Determine winner and update game state
+                    const result = this.determineWinner(playerChoice, computerChoice);
+                    this.displayResult(result, playerChoice, computerChoice);
+                    this.updateGameStats(result);
+
+                    // Add result animations
+                    this.addAnimation('result-text', result === 'win' ? 'pulse' : result === 'lose' ? 'shake' : 'glow');
+                    this.addAnimation('vs', 'pulse');
+
+                    // Update balance for wins
+                    if (result === 'win') {
+                        this.balance++;
+                        this.saveBalance();
+                        this.updateBalanceDisplay();
+                    }
+                }, 1200);
             }
         } catch (error) {
             console.error('Error playing game:', error);
             this.showError('An error occurred while playing. Please try again.');
         }
+    }
+
+    /**
+     * Add animation to element
+     */
+    addAnimation(elementId, animationType) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        // Remove existing animation classes
+        element.classList.remove('bounce', 'pulse', 'shake', 'glow');
+        
+        // Add new animation class
+        element.classList.add(animationType);
+        
+        // Remove animation class after animation completes
+        setTimeout(() => {
+            element.classList.remove(animationType);
+        }, 1000);
     }
 
     /**
@@ -290,7 +338,7 @@ class RockPaperScissorsGame {
 
         const iconClass = icons[choice] || 'fas fa-question';
         element.innerHTML = `<i class="${iconClass}"></i>`;
-        element.className = `choice-icon ${choice}`;
+        element.className = `choice-icon ${choice} animated`;
     }
 
     /**
@@ -371,6 +419,14 @@ class RockPaperScissorsGame {
             if (choicesElement && resultElement) {
                 choicesElement.style.display = 'flex';
                 resultElement.classList.add('hidden');
+                
+                // Clear animations
+                ['player-choice-icon', 'computer-choice-icon', 'result-text', 'vs'].forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.classList.remove('bounce', 'pulse', 'shake', 'glow');
+                    }
+                });
             }
         } catch (error) {
             console.error('Error resetting game:', error);
@@ -754,6 +810,56 @@ class RockPaperScissorsGame {
         } catch (error) {
             console.error('Error importing game data:', error);
             return false;
+        }
+    }
+
+    /**
+     * Show withdraw modal
+     */
+    showWithdrawModal() {
+        const modal = document.getElementById('withdraw-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            this.updateBalanceDisplay();
+            
+            // Clear previous status and input
+            this.clearWithdrawStatus();
+            const input = document.getElementById('withdraw-amount');
+            if (input) {
+                input.value = '';
+                setTimeout(() => input.focus(), 100);
+            }
+        }
+    }
+
+    /**
+     * Hide withdraw modal
+     */
+    hideWithdrawModal() {
+        const modal = document.getElementById('withdraw-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            this.clearWithdrawStatus();
+        }
+    }
+
+    /**
+     * Show wallet connect modal
+     */
+    showWalletModal() {
+        const modal = document.getElementById('wallet-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * Hide wallet connect modal
+     */
+    hideWalletModal() {
+        const modal = document.getElementById('wallet-modal');
+        if (modal) {
+            modal.classList.add('hidden');
         }
     }
 }

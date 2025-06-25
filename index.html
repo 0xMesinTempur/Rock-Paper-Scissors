@@ -11,12 +11,18 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header with Balance -->
+        <!-- Header with Balance and Withdraw -->
         <header class="header">
-            <div class="balance-container">
-                <i class="fas fa-coins"></i>
-                <span class="balance-label">Balance:</span>
-                <span id="balance" class="balance-amount">0</span>
+            <div class="header-content">
+                <div class="balance-container">
+                    <i class="fas fa-coins"></i>
+                    <span class="balance-label">Balance:</span>
+                    <span id="balance" class="balance-amount">0</span>
+                </div>
+                <button id="header-withdraw-btn" class="header-withdraw-btn">
+                    <i class="fas fa-arrow-up"></i>
+                    Withdraw
+                </button>
             </div>
         </header>
 
@@ -35,6 +41,10 @@
                 <button id="daily-checkin-btn" class="menu-button">
                     <i class="fas fa-calendar-check"></i>
                     Daily Check-In
+                </button>
+                <button id="connect-wallet-btn" class="menu-button wallet-connect">
+                    <i class="fas fa-link"></i>
+                    Connect Wallet
                 </button>
             </div>
         </div>
@@ -68,15 +78,15 @@
                     <div class="battle-display">
                         <div class="player-choice">
                             <h3>You</h3>
-                            <div id="player-choice-icon" class="choice-icon"></div>
+                            <div id="player-choice-icon" class="choice-icon animated"></div>
                         </div>
-                        <div class="vs">VS</div>
+                        <div class="vs animated">VS</div>
                         <div class="computer-choice">
                             <h3>Computer</h3>
-                            <div id="computer-choice-icon" class="choice-icon"></div>
+                            <div id="computer-choice-icon" class="choice-icon animated"></div>
                         </div>
                     </div>
-                    <div id="result-text" class="result-text"></div>
+                    <div id="result-text" class="result-text animated"></div>
                     <button id="play-again" class="play-again-btn">Play Again</button>
                 </div>
             </div>
@@ -154,64 +164,61 @@
             </div>
         </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <!-- Wallet Section -->
-                <div class="wallet-section">
-                    <div class="wallet-header">
-                        <i class="fas fa-wallet"></i>
-                        <h3>Your Wallet</h3>
-                    </div>
-                    
-                    <!-- Balance Display -->
-                    <div class="wallet-balance">
-                        <div class="balance-info">
-                            <span class="balance-label">Available:</span>
-                            <span id="footer-balance" class="footer-balance-amount">0</span>
-                            <span class="currency">coins</span>
-                        </div>
-                    </div>
-
-                    <!-- Withdraw Section -->
-                    <div class="withdraw-container">
-                        <div class="withdraw-controls">
-                            <input type="number" id="withdraw-amount" placeholder="Enter amount" min="1" max="1000">
-                            <button id="withdraw-btn" class="withdraw-button">
-                                <i class="fas fa-arrow-up"></i>
-                                Withdraw
-                            </button>
-                        </div>
-                        <div id="withdraw-status" class="withdraw-status"></div>
-                    </div>
+        <!-- Withdraw Modal -->
+        <div id="withdraw-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Withdraw Coins</h3>
+                    <button id="close-withdraw-modal" class="close-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-
-                <!-- Farcaster Integration Section -->
-                <div class="farcaster-section">
-                    <div class="farcaster-header">
-                        <i class="fas fa-link"></i>
-                        <h3>Connect to Farcaster</h3>
+                <div class="modal-body">
+                    <div class="withdraw-info">
+                        <p>Available Balance: <span id="modal-balance">0</span> coins</p>
                     </div>
-                    <div class="farcaster-content">
-                        <p>Link your Farcaster account to share achievements and earn rewards</p>
-                        <div class="farcaster-buttons">
-                            <button id="connect-farcaster" class="farcaster-btn primary">
-                                <i class="fas fa-user-plus"></i>
-                                Connect Account
-                            </button>
-                            <button id="share-score" class="farcaster-btn secondary" disabled>
-                                <i class="fas fa-share"></i>
-                                Share Score
-                            </button>
-                        </div>
-                        <div class="farcaster-status">
-                            <span class="status-indicator offline"></span>
-                            <span class="status-text">Not connected</span>
-                        </div>
+                    <div class="withdraw-form">
+                        <input type="number" id="withdraw-amount" placeholder="Enter amount" min="1" max="1000">
+                        <button id="withdraw-btn" class="withdraw-button">
+                            <i class="fas fa-arrow-up"></i>
+                            Withdraw
+                        </button>
+                    </div>
+                    <div id="withdraw-status" class="withdraw-status"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallet Connect Modal -->
+        <div id="wallet-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Connect Wallet</h3>
+                    <button id="close-wallet-modal" class="close-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="wallet-info">
+                        <p>Connect your wallet to enable secure transactions and social features</p>
+                    </div>
+                    <div class="wallet-buttons">
+                        <button id="connect-farcaster" class="wallet-connect-btn">
+                            <i class="fas fa-user-plus"></i>
+                            Connect Farcaster
+                        </button>
+                        <button id="share-score" class="wallet-connect-btn secondary" disabled>
+                            <i class="fas fa-share"></i>
+                            Share Score
+                        </button>
+                    </div>
+                    <div class="wallet-status">
+                        <span class="status-indicator offline"></span>
+                        <span class="status-text">Not connected</span>
                     </div>
                 </div>
             </div>
-        </footer>
+        </div>
     </div>
 
     <script src="script.js"></script>

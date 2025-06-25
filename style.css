@@ -45,8 +45,7 @@ body {
 /* Header */
 .header {
     background: linear-gradient(135deg, var(--card-background) 0%, #1a202c 100%);
-    padding: 20px;
-    text-align: center;
+    padding: 15px 20px;
     color: var(--text-primary);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     border-bottom: 2px solid var(--primary-color);
@@ -55,21 +54,50 @@ body {
     z-index: 100;
 }
 
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 460px;
+    margin: 0 auto;
+}
+
 .balance-container {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-size: 1.2rem;
+    gap: 8px;
+    font-size: 1.1rem;
     font-weight: bold;
 }
 
 .balance-amount {
     background: rgba(255, 255, 255, 0.1);
-    padding: 5px 15px;
-    border-radius: 20px;
+    padding: 4px 12px;
+    border-radius: 15px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-withdraw-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--primary-font);
+    box-shadow: 0 2px 8px rgba(66, 153, 225, 0.3);
+}
+
+.header-withdraw-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);
 }
 
 /* Screen Management */
@@ -120,10 +148,10 @@ body {
 .menu-button {
     background: linear-gradient(135deg, var(--card-background) 0%, var(--card-border) 100%);
     border: 2px solid var(--primary-color);
-    padding: 20px;
-    border-radius: 15px;
+    padding: 16px 20px;
+    border-radius: 12px;
     color: var(--text-primary);
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -133,10 +161,11 @@ body {
     gap: 10px;
     box-shadow: 0 4px 15px rgba(66, 153, 225, 0.2);
     font-family: var(--primary-font);
+    min-height: 58px;
 }
 
 .menu-button:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(66, 153, 225, 0.4);
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     border-color: var(--secondary-color);
@@ -144,6 +173,16 @@ body {
 
 .menu-button:active {
     transform: translateY(-1px);
+}
+
+.menu-button.wallet-connect {
+    background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 100%);
+    border-color: #8B5CF6;
+}
+
+.menu-button.wallet-connect:hover {
+    background: linear-gradient(135deg, #7C3AED 0%, #9333EA 100%);
+    border-color: #7C3AED;
 }
 
 /* Screen Headers */
@@ -192,32 +231,33 @@ body {
 .choice-btn {
     background: var(--card-background);
     border: 3px solid var(--card-border);
-    border-radius: 20px;
-    padding: 20px;
+    border-radius: 18px;
+    padding: 18px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    min-width: 120px;
+    gap: 8px;
+    width: 110px;
+    height: 110px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     font-family: var(--primary-font);
 }
 
 .choice-btn:hover {
     border-color: var(--primary-color);
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(66, 153, 225, 0.4);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
     background: var(--card-border);
 }
 
 .choice-btn:active {
-    transform: translateY(-2px);
+    transform: translateY(-1px) scale(1.02);
 }
 
 .choice-btn i {
-    font-size: 3rem;
+    font-size: 2.5rem;
     color: var(--primary-color);
     transition: all 0.3s ease;
 }
@@ -230,6 +270,7 @@ body {
 .choice-btn span {
     font-weight: bold;
     color: var(--text-primary);
+    font-size: 0.9rem;
 }
 
 /* Game Result */
@@ -251,6 +292,68 @@ body {
         opacity: 1; 
         transform: translateY(0); 
     }
+}
+
+/* Game Animations */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-15px);
+    }
+    60% {
+        transform: translateY(-7px);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-3px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(3px);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(66, 153, 225, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(66, 153, 225, 0.8), 0 0 30px rgba(66, 153, 225, 0.6);
+    }
+}
+
+.animated.bounce {
+    animation: bounce 0.6s ease-in-out;
+}
+
+.animated.pulse {
+    animation: pulse 0.8s ease-in-out;
+}
+
+.animated.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+.animated.glow {
+    animation: glow 1s ease-in-out infinite;
 }
 
 .battle-display {
@@ -334,16 +437,17 @@ body {
 .play-again-btn {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     border: none;
-    padding: 15px 30px;
-    border-radius: 25px;
+    padding: 12px 24px;
+    border-radius: 20px;
     color: white;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 20px;
     font-family: var(--primary-font);
     box-shadow: 0 4px 15px rgba(66, 153, 225, 0.2);
+    min-height: 44px;
 }
 
 .play-again-btn:hover {
@@ -471,19 +575,20 @@ body {
 .claim-button {
     background: linear-gradient(135deg, var(--success-color), #a8e6cf);
     border: none;
-    padding: 15px 30px;
-    border-radius: 25px;
+    padding: 12px 24px;
+    border-radius: 20px;
     color: white;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     margin: 0 auto;
     font-family: var(--primary-font);
     box-shadow: 0 4px 15px rgba(86, 171, 47, 0.2);
+    min-height: 48px;
 }
 
 .claim-button:hover:not(:disabled) {
@@ -514,6 +619,245 @@ body {
     background: rgba(255, 193, 7, 0.1);
     color: var(--warning-color);
     border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--card-background);
+    border-radius: 20px;
+    padding: 0;
+    max-width: 400px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--card-border);
+    animation: slideUp 0.3s ease-in-out;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+/* Withdraw Modal */
+.withdraw-info {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(66, 153, 225, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(66, 153, 225, 0.3);
+}
+
+.withdraw-info p {
+    margin: 0;
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+#modal-balance {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.withdraw-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#withdraw-amount {
+    padding: 12px 15px;
+    border: 2px solid var(--card-border);
+    border-radius: 10px;
+    background: #1e1e2e;
+    color: var(--text-primary);
+    font-family: var(--primary-font);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+#withdraw-amount:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+.withdraw-button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: var(--primary-font);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+}
+
+.withdraw-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);
+}
+
+.withdraw-status {
+    font-size: 0.9rem;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.withdraw-status.success {
+    background: rgba(86, 171, 47, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(86, 171, 47, 0.3);
+}
+
+.withdraw-status.error {
+    background: rgba(255, 65, 108, 0.1);
+    color: var(--error-color);
+    border: 1px solid rgba(255, 65, 108, 0.3);
+}
+
+/* Wallet Connect Modal */
+.wallet-info {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.wallet-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.wallet-connect-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: var(--primary-font);
+    font-weight: bold;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+}
+
+.wallet-connect-btn:not(.secondary) {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.wallet-connect-btn:not(.secondary):hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);
+}
+
+.wallet-connect-btn.secondary {
+    background: var(--card-border);
+    color: var(--text-primary);
+    border: 1px solid var(--card-border);
+}
+
+.wallet-connect-btn.secondary:hover:not(:disabled) {
+    background: var(--primary-color);
+    color: white;
+}
+
+.wallet-connect-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.wallet-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-indicator.online {
+    background: var(--success-color);
+    box-shadow: 0 0 6px rgba(86, 171, 47, 0.5);
+}
+
+.status-indicator.offline {
+    background: #666;
 }
 
 /* Footer */
