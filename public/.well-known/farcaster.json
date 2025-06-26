@@ -1,0 +1,11 @@
+{
+  "version": "1",
+  "name": "RPS",
+  "iconUrl": "https://rock-paper-scissors-tau-swart.vercel.app",
+  "homeUrl": "https://rock-paper-scissors-tau-swart.vercel.app",
+  "splashImageUrl": "https://rock-paper-scissors-tau-swart.vercel.app",
+  "description": "Rock Paper Scisscors",
+  "screenshotUrls": [
+    "https://rock-paper-scissors-tau-swart.vercel.app"
+  ]
+}
