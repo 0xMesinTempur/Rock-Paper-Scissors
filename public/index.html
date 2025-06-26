@@ -292,33 +292,11 @@
     <script src="script.js"></script>
 
     <script type="module">
-  import { sdk } from "https://esm.sh/@farcaster/frame-sdk"
+  import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
 
   sdk.ready().then(() => {
-    console.log("Farcaster SDK siap!")
-
-    // Login user Farcaster
-    sdk.actions.signin().then((user) => {
-      console.log("User:", user)
-
-      // Contoh aktifkan tombol share jika login berhasil
-      const shareBtn = document.getElementById("share-score")
-      if (shareBtn) {
-        shareBtn.disabled = false
-        shareBtn.addEventListener("click", () => {
-          sdk.actions.composeCast({
-            text: "Aku baru saja main RPS Game di Farcaster!",
-            embeds: [window.location.href]
-          })
-        })
-      }
-
-      // Update status UI
-      document.querySelector(".wallet-status .status-indicator").classList.remove("offline")
-      document.querySelector(".wallet-status .status-indicator").classList.add("online")
-      document.querySelector(".wallet-status .status-text").textContent = `Connected as ${user.displayName}`
-    })
-  })
+    console.log("SDK siap!");
+  });
 </script>
 
 </body>
